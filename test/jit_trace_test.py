@@ -48,13 +48,13 @@ def plot_one_box(x, img, color, label=None, line_thickness=None):  # Plots one b
     cv2.rectangle(img, c1, c2, color, thickness=tl)
     if label:
         tf = max(tl - 1, 1)  # font thickness
-        t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
+        t_size = cv2.getTextSize(label, 0, fontScale=tl / 8, thickness=tf)[0]
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1)  # filled
-        cv2.putText(img, label, (c1[0], c1[1]+40), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+        cv2.putText(img, label, (c1[0], c1[1]+40), 0, tl / 8, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
 def test(config):
-    trace_model = torch.jit.load('../weights/cplus_model.pt')
+    trace_model = torch.jit.load('../weights/head_detect_model.pt')
     # YOLO loss with 3 scales
     # yolo_losses = []
     # for i in range(3):
@@ -82,7 +82,7 @@ def test(config):
                 continue
 
             # Padded resize
-            img, _, _, _ = resize_square(image, height=416, color=(127.5, 127.5, 127.5))
+            img, _, _, _ = resize_square(image, height=608, color=(127.5, 127.5, 127.5))
 
             # Normalize RGB
             img = img[:, :, ::-1].transpose(2, 0, 1)
@@ -102,7 +102,7 @@ def test(config):
             #     output_list.append(yolo_losses[i](outputs[i]))
             # output = torch.cat(output_list, 1)
             batch_detections = non_max_suppression(outputs, config["yolo"]["classes"],
-                                                   conf_thres=config["confidence_threshold"],
+                                                   conf_thres=0.2,
                                                    nms_thres=0.45)
 
         # write result images. Draw bounding boxes and labels of detections
@@ -138,7 +138,7 @@ def test(config):
                     x1, y1, x2, y2 = max(x1, 0), max(y1, 0), max(x2, 0), max(y2, 0)
 
                     # Add the bbox to the plot
-                    label = '%s %.2f' % (classes[int(box[-1])], box[-2])
+                    label = '%s %.2f' % (classes[int(box[-1])], box[-3])
                     color = bbox_colors[int(box[-1])]
                     if int(box[-1]) == 0 or True:
                         plot_one_box([x1, y1, x2, y2], img, label=label, color=color)

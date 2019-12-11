@@ -12,7 +12,7 @@ TRAINING_PARAMS = \
     },
     "batch_size": 1,
     "confidence_threshold": 0.5,
-    "images_path": "./images/",
+    "images_path": "/media/hzh/work/workspace/ev_sdk_smoke_phone_2.7/bin/res",
     "classes_names_path": "../data/coco.names",
     "img_h": 608,
     "img_w": 608,
