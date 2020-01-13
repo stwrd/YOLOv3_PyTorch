@@ -58,7 +58,7 @@ def test(config):
     # Load and initialize network
     net = ModelMain(config, is_training=is_training)
     net.train(is_training)
-    net.load_darknet_weights('../weights/yolov3_head_100000.weights')
+    net.load_darknet_weights('/root/share/workspace/fighting_detect_yolo/weights/yolov3_fight_92000.weights')
     # torch.save(net.state_dict, '../weights/cvt.pt')
 
     # Set data parallel
@@ -100,7 +100,7 @@ def test(config):
                 continue
 
             # Padded resize
-            img, _, _, _ = resize_square(image, height=608, color=(127.5, 127.5, 127.5))
+            img, _, _, _ = resize_square(image, height=416, color=(127.5, 127.5, 127.5))
 
             # Normalize RGB
             img = img[:, :, ::-1].transpose(2, 0, 1)
@@ -118,7 +118,7 @@ def test(config):
             pred_out = trace_model(images)
             # pred_out1 = trace_model(torch.from_numpy(np.ones([3,608,608],np.float32)).unsqueeze(0).cuda())
             trace_torch_model = False
-            trace_model.save('../weights/head_detect_model.pt')
+            trace_model.save('../weights/fighting_detect_model.pt')
             break
             # trace_model1 = torch.jit.load('../weights/head_detect_model.pt')
             # pred_out = trace_model1(images)
